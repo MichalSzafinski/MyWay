@@ -2,6 +2,7 @@ package com.example.szafa.myway;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -123,7 +124,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onClickBtn(View v) //Set route button click
     {
-        Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, RouteLocationsActivity.class);
+        startActivity(intent);
 
 
         mFusedLocationClient.getLastLocation()
@@ -138,5 +142,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
 
+    }
+
+    public void onClientListClick(View view){
+        Intent intent = new Intent(this, ClientListActivity.class);
+        startActivity(intent);
     }
 }

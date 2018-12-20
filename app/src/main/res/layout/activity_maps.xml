@@ -25,13 +25,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <Button
-                    android:layout_alignParentRight="true"
                     android:id="@+id/buttonSetRoute"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:text="Set route"
-                    android:onClick="onClickBtn"/>
+                    android:layout_alignParentRight="true"
+                    android:onClick="onClickBtn"
+                    android:text="Set route" />
             </RelativeLayout>
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
