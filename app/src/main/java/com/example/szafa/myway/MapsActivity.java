@@ -191,7 +191,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void DisplayShortestRoute()
     {
-        GeoApiContext context = new GeoApiContext.Builder().apiKey("AIzaSyBsuJVWuZodkTy2qHjMqaEtYCDy_4hq7Yo").build();
+        GeoApiContext context = new GeoApiContext.Builder().apiKey("").build();
 
         List<LatLng> path = new ArrayList();
         List<Pair<LatLng, String>> markers = new ArrayList<>();
