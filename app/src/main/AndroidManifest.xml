@@ -46,7 +46,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".ClientListActivity" />
-        <activity android:name=".RouteLocationsActivity"></activity>
+        <activity android:name=".RouteLocationsActivity" />
+        <activity
+            android:name=".OptionsActivity"
+            android:label="@string/title_activity_options"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
