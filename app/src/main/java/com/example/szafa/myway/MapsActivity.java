@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -59,7 +60,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private DrawerLayout mDrawerLayout;
     private LatLng ClientLocation = new LatLng(40,40);
+    private ArrayList<Client> clientsToVisit;
 
+    public static final int LOCATIONS_REQUEST = 2;
     public String[] RouteAddresses = new String[] {"Aleje Jerozolimskie", "Obozowa Warszawa", "Koszykowa Warszawa", "Stadion Narodowy"};
     public String StartAddress = "Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
@@ -75,12 +78,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-         setNavBar();
+        setNavBar();
+
+        ClientsDbHelper db = ClientsDbHelper.initDbHelper(getApplicationContext());
+        clientsToVisit = new ArrayList<>();
     }
     private void SwitchToRouteLocationsActivity()
     {
         Intent intent = new Intent(this, RouteLocationsActivity.class);
-        startActivity(intent);
+        intent.putExtra(RouteLocationsActivity.LIST_ID, clientsToVisit);
+        startActivityForResult(intent, LOCATIONS_REQUEST);
     }
     private void SwitchToOptions()
     {
@@ -330,4 +337,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        ClientsDbHelper.getDbHelper().close();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOCATIONS_REQUEST)
+        {
+            if(resultCode == RESULT_OK){
+                clientsToVisit = (ArrayList<Client>) data.getSerializableExtra(RouteLocationsActivity.LIST_ID);
+            }
+        }
+    }
 }
