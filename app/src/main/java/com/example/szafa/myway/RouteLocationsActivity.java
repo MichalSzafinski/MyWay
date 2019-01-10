@@ -42,7 +42,10 @@ public class RouteLocationsActivity extends AppCompatActivity {
         intent.putExtra(LIST_ID, clientsToVisit);
         startActivityForResult(intent, ADD_LOCATION_REQUEST);
     }
+    public void onButtonOkClick(View view){
 
+        finish();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

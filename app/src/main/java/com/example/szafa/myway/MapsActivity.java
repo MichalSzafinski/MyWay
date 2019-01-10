@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -64,8 +65,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static final int LOCATIONS_REQUEST = 2;
     public String[] RouteAddresses = new String[] {"Aleje Jerozolimskie", "Obozowa Warszawa", "Koszykowa Warszawa", "Stadion Narodowy"};
-    public String StartAddress = "Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
+    public String StartAddress = null; //"Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
+
+    private String GEOAPIKEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,15 +193,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onClickBtn(View v) //Set route button click
     {
-        DisplayShortestRoute();
+        try{
+            DisplayShortestRoute();
+        }
+        catch(Exception e)
+        {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        }
 
-        //Intent intent = new Intent(this, RouteLocationsActivity.class);
-        //startActivity(intent);
+        //SwitchToRouteLocationsActivity();
+        //DisplayShortestRoute();
     }
 
     public void DisplayShortestRoute()
     {
-        GeoApiContext context = new GeoApiContext.Builder().apiKey("").build();
+       /* String s = "";
+
+        for (Client cl: clientsToVisit
+                ) {
+            s+=cl.getAddress() + " ";
+        }
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();*/
+        mMap.clear();
+
+        GeoApiContext context = new GeoApiContext.Builder().apiKey(GEOAPIKEY).build();
+
+        RouteAddresses = new String[clientsToVisit.size()];
+        for (int i=0;i<clientsToVisit.size(); i++)
+        {
+            RouteAddresses[i] = clientsToVisit.get(i).getAddress();
+        }
 
         List<LatLng> path = new ArrayList();
         List<Pair<LatLng, String>> markers = new ArrayList<>();
@@ -351,6 +375,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             if(resultCode == RESULT_OK){
                 clientsToVisit = (ArrayList<Client>) data.getSerializableExtra(RouteLocationsActivity.LIST_ID);
+                //DisplayShortestRoute();
             }
         }
     }
