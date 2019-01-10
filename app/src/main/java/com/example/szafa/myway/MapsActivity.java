@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -68,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public String StartAddress = null; //"Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
 
-    private String GEOAPIKEY = "";
+    private String GEOAPIKEY = "AIzaSyBsuJVWuZodkTy2qHjMqaEtYCDy_4hq7Yo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -316,6 +317,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
             mMap.addPolyline(opts);
+
+            /*double lat_min = markers.get(0).first.latitude, lat_max= markers.get(0).first.latitude, lng_min= markers.get(0).first.longitude, lng_max= markers.get(0).first.longitude;
+            for (int i=1;i<markers.size(); i++)
+            {
+                if(lat_min > markers.get(i).first.latitude)
+                    lat_min = markers.get(i).first.latitude;
+                if(lat_max < markers.get(i).first.latitude)
+                    lat_max = markers.get(i).first.latitude;
+                if(lng_min > markers.get(i).first.longitude)
+                    lng_min = markers.get(i).first.longitude;
+                if(lng_max < markers.get(i).first.longitude)
+                    lng_max = markers.get(i).first.longitude;
+            }
+            LatLng center = new LatLng(lat_min + (lat_max-lat_min)/2, lng_min + (lng_max - lng_min)/2);
+            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(center, 15);
+            mMap.animateCamera(location);*/
 
             //Toast for journey time and length
             Toast.makeText(this,"Estimated time : " + FormatTimeFromSeconds(JourneyTime) + "\nDistance : " + FormatDistanceFromMeters(JourneyLength) , Toast.LENGTH_LONG).show();

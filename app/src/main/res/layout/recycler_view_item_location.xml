@@ -30,6 +30,7 @@
       android:layout_marginEnd="8dp"
       android:layout_marginRight="8dp"
       android:text="–"
+      android:onClick="onButtonRemoveLocationClick"
       android:textAllCaps="false"
       android:textSize="18sp"
       app:layout_constraintEnd_toEndOf="parent"
