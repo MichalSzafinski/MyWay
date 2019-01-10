@@ -69,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public String StartAddress = null; //"Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
 
-    private String GEOAPIKEY = "AIzaSyBsuJVWuZodkTy2qHjMqaEtYCDy_4hq7Yo";
+    private String GEOAPIKEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
