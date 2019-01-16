@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -66,8 +68,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int LOCATIONS_REQUEST = 2;
     public static final int OPTIONS_REQUEST = 3;
     public String[] RouteAddresses = new String[] {"Aleje Jerozolimskie", "Obozowa Warszawa", "Koszykowa Warszawa", "Stadion Narodowy"};
-    public String StartAddress = "Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
+    public String StartAddress = null; //"Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
+
+    private String GEOAPIKEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,15 +197,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onClickBtn(View v) //Set route button click
     {
-        DisplayShortestRoute();
+        try{
+            DisplayShortestRoute();
+        }
+        catch(Exception e)
+        {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        }
 
-        //Intent intent = new Intent(this, RouteLocationsActivity.class);
-        //startActivity(intent);
+        //SwitchToRouteLocationsActivity();
+        //DisplayShortestRoute();
     }
 
     public void DisplayShortestRoute()
     {
-        GeoApiContext context = new GeoApiContext.Builder().apiKey("").build();
+       /* String s = "";
+
+        for (Client cl: clientsToVisit
+                ) {
+            s+=cl.getAddress() + " ";
+        }
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();*/
+        mMap.clear();
+
+        GeoApiContext context = new GeoApiContext.Builder().apiKey(GEOAPIKEY).build();
+
+        RouteAddresses = new String[clientsToVisit.size()];
+        for (int i=0;i<clientsToVisit.size(); i++)
+        {
+            RouteAddresses[i] = clientsToVisit.get(i).getAddress();
+        }
 
         List<LatLng> path = new ArrayList();
         List<Pair<LatLng, String>> markers = new ArrayList<>();
@@ -296,6 +321,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
             mMap.addPolyline(opts);
 
+            /*double lat_min = markers.get(0).first.latitude, lat_max= markers.get(0).first.latitude, lng_min= markers.get(0).first.longitude, lng_max= markers.get(0).first.longitude;
+            for (int i=1;i<markers.size(); i++)
+            {
+                if(lat_min > markers.get(i).first.latitude)
+                    lat_min = markers.get(i).first.latitude;
+                if(lat_max < markers.get(i).first.latitude)
+                    lat_max = markers.get(i).first.latitude;
+                if(lng_min > markers.get(i).first.longitude)
+                    lng_min = markers.get(i).first.longitude;
+                if(lng_max < markers.get(i).first.longitude)
+                    lng_max = markers.get(i).first.longitude;
+            }
+            LatLng center = new LatLng(lat_min + (lat_max-lat_min)/2, lng_min + (lng_max - lng_min)/2);
+            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(center, 15);
+            mMap.animateCamera(location);*/
+
             //Toast for journey time and length
             Toast.makeText(this,"Estimated time : " + FormatTimeFromSeconds(JourneyTime) + "\nDistance : " + FormatDistanceFromMeters(JourneyLength) , Toast.LENGTH_LONG).show();
         }
@@ -353,6 +394,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(requestCode == LOCATIONS_REQUEST) {
             if(resultCode == RESULT_OK){
                 clientsToVisit = (ArrayList<Client>) data.getSerializableExtra(RouteLocationsActivity.LIST_ID);
+                //DisplayShortestRoute();
             }
         }
         else if(requestCode == OPTIONS_REQUEST) {

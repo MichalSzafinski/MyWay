@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
     private ArrayList<Client> data;
+    private RouteLocationsActivity parentActivity;
 
     public ArrayList<Client> getData() {
         return data;
@@ -42,8 +43,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     }
 
-    public LocationAdapter(ArrayList<Client> data){
+    public LocationAdapter(ArrayList<Client> data, RouteLocationsActivity _parentActivity){
         this.data = data;
+        parentActivity = _parentActivity;
     }
 
     @NonNull
@@ -62,6 +64,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
             public void onClick(View v) {
                 data.remove(position);
                 notifyDataSetChanged();
+                parentActivity.SetClientsToVisit(data);
             }
         });
     }

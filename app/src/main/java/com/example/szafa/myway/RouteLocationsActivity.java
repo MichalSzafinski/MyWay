@@ -19,6 +19,14 @@ public class RouteLocationsActivity extends AppCompatActivity {
     private ArrayList<Client> clientsToVisit;
     private LocationAdapter locationAdapter;
 
+    public void SetClientsToVisit(ArrayList<Client> l)
+    {
+        clientsToVisit = l;
+        Intent intent = new Intent();
+        intent.putExtra(LIST_ID, clientsToVisit);
+        setResult(RESULT_OK, intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +34,7 @@ public class RouteLocationsActivity extends AppCompatActivity {
         RecyclerView locationsView = (RecyclerView) findViewById(R.id.locationsView);
         Intent intent = getIntent();
         clientsToVisit = (ArrayList<Client>) intent.getSerializableExtra(LIST_ID);
-        locationAdapter = new LocationAdapter(clientsToVisit);
+        locationAdapter = new LocationAdapter(clientsToVisit, this);
         locationsView.setAdapter(locationAdapter);
         locationsView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -42,7 +50,10 @@ public class RouteLocationsActivity extends AppCompatActivity {
         intent.putExtra(LIST_ID, clientsToVisit);
         startActivityForResult(intent, ADD_LOCATION_REQUEST);
     }
+    public void onButtonOkClick(View view){
 
+        finish();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
