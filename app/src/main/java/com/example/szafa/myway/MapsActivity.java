@@ -61,8 +61,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout mDrawerLayout;
     private LatLng ClientLocation = new LatLng(40,40);
     private ArrayList<Client> clientsToVisit;
+    private Options options = new Options(TransportMean.Car, true, true);
 
     public static final int LOCATIONS_REQUEST = 2;
+    public static final int OPTIONS_REQUEST = 3;
     public String[] RouteAddresses = new String[] {"Aleje Jerozolimskie", "Obozowa Warszawa", "Koszykowa Warszawa", "Stadion Narodowy"};
     public String StartAddress = "Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
@@ -92,7 +94,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void SwitchToOptions()
     {
         Intent intent = new Intent(this, OptionsActivity.class);
-        startActivity(intent);
+        intent.putExtra(OptionsActivity.OPTIONS_ID, options);
+        startActivityForResult(intent, OPTIONS_REQUEST);
     }
     private void a(String aa)
     {
@@ -347,10 +350,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOCATIONS_REQUEST)
-        {
+        if(requestCode == LOCATIONS_REQUEST) {
             if(resultCode == RESULT_OK){
                 clientsToVisit = (ArrayList<Client>) data.getSerializableExtra(RouteLocationsActivity.LIST_ID);
+            }
+        }
+        else if(requestCode == OPTIONS_REQUEST) {
+            if(resultCode == RESULT_OK){
+                options = (Options) data.getSerializableExtra(OptionsActivity.OPTIONS_ID);
             }
         }
     }

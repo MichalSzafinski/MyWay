@@ -31,6 +31,7 @@
 
         <activity
             android:name=".MapsActivity"
+            android:screenOrientation="sensorPortrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,15 +39,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddClientActivity">
+        <activity android:name=".AddClientActivity"
+            android:screenOrientation="sensorPortrait">
 
         </activity>
-        <activity android:name=".ClientListActivity" />
-        <activity android:name=".RouteLocationsActivity" />
+        <activity android:name=".ClientListActivity"
+            android:screenOrientation="sensorPortrait"/>
+        <activity android:name=".RouteLocationsActivity"
+            android:screenOrientation="sensorPortrait"/>
         <activity
             android:name=".OptionsActivity"
             android:label="@string/title_activity_options"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="sensorPortrait"></activity>
     </application>
 
 </manifest>

@@ -7,14 +7,77 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".OptionsActivity"
     tools:showIn="@layout/activity_options">
+
+    <Spinner
+        android:id="@+id/spinnerMean"
+        android:layout_width="126dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="17dp"
+        app:layout_constraintBottom_toTopOf="@+id/switchStartCurrent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-        android:id="@+id/clientList"
+        android:id="@+id/txtMean"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="18dp"
+        android:text="Mean of transport"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtStartCurrent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/txtStartCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="21dp"
+        android:text="Start in current location"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtStopCurrent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerMean" />
+
+    <TextView
+        android:id="@+id/txtStopCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Stop in current location"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/switchStopCurrent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/switchStopCurrent" />
+
+    <Switch
+        android:id="@+id/switchStartCurrent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Nic tu nie ma\npozdrawiam"
-        android:textSize="30sp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switchStopCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchStartCurrent" />
 </android.support.constraint.ConstraintLayout>
