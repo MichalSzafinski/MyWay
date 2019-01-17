@@ -58,7 +58,7 @@ public class ClientListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        allClients = db.getClients();
+        loadClients();
         filterClients();
     }
 
@@ -85,5 +85,9 @@ public class ClientListActivity extends AppCompatActivity {
         }
         clientAdapter.setData(filtered);
         clientAdapter.notifyDataSetChanged();
+    }
+
+    public void loadClients(){
+        allClients = db.getClients();
     }
 }

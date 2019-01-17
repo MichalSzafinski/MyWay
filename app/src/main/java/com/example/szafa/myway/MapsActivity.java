@@ -25,6 +25,7 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import java.time.ZonedDateTime;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -71,7 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public String StartAddress = null; //"Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
 
-    private String GEOAPIKEY = "";
+    private String GEOAPIKEY = "AIzaSyBsuJVWuZodkTy2qHjMqaEtYCDy_4hq7Yo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
