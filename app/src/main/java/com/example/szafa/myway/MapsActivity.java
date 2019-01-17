@@ -375,6 +375,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         snippet += String.format("\n" + "TEL : %s", ClientWaypoints.get(waypointOrder[i - 1]).getPhone());
                     else if (!options.isStartCurrent() && i > 0 && i - 1 < waypointOrder.length && ClientWaypoints.get(waypointOrder[i - 1]).getPhone().length() > 2)
                         snippet += String.format("\n" + "TEL : %s", ClientWaypoints.get(waypointOrder[i - 1]).getPhone());
+                    else if (i == markers.size()-1 && !options.isStopCurrent() && clientsToVisit.get(clientsToVisit.size()-1).getPhone().length()>2)
+                        snippet += String.format("\n" + "Tel : %s", clientsToVisit.get(clientsToVisit.size()-1).getPhone());
                 }
                 catch(Exception ex)
                 {
