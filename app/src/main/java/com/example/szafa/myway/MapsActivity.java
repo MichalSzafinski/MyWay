@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,8 +23,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.time.ZonedDateTime;
 
@@ -51,6 +55,7 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.Duration;
 import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,7 +198,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
 
         mMap.setMyLocationEnabled(true);
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                Context mContext = getApplicationContext();
+
+                LinearLayout info = new LinearLayout(mContext);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(mContext);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(mContext);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
     }
 
     public void onClickBtn(View v) //Set route button click
@@ -212,29 +246,48 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void DisplayShortestRoute()
     {
-       /* String s = "";
-
-        for (Client cl: clientsToVisit
-                ) {
-            s+=cl.getAddress() + " ";
+        //Checking if options are ok
+        int waypointsInList = 0;
+        if(!options.isStartCurrent())
+            waypointsInList++;
+        if(!options.isStopCurrent())
+            waypointsInList++;
+        if(clientsToVisit.size()<waypointsInList || clientsToVisit.size()<=1)
+        {
+            Toast.makeText(this, "Za mało podanych adresów!", Toast.LENGTH_LONG).show();
+            return;
         }
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();*/
+
         mMap.clear();
 
         GeoApiContext context = new GeoApiContext.Builder().apiKey(GEOAPIKEY).build();
 
-        RouteAddresses = new String[clientsToVisit.size()];
+        String start="", end="";
+        ArrayList<String> waypoints = new ArrayList<String>();
+        ArrayList<Client> ClientWaypoints = new ArrayList<Client>();
+
         for (int i=0;i<clientsToVisit.size(); i++)
         {
-            RouteAddresses[i] = clientsToVisit.get(i).getAddress();
+            if(i==0 && !options.isStartCurrent())
+                start = clientsToVisit.get(i).getAddress();
+            else if(i== clientsToVisit.size()-1 && !options.isStopCurrent())
+                end = clientsToVisit.get(i).getAddress();
+            else
+            {
+                waypoints.add(clientsToVisit.get(i).getAddress());
+                ClientWaypoints.add(clientsToVisit.get(i));
+            }
+
         }
+        RouteAddresses = new String[waypoints.size()];
+        RouteAddresses = waypoints.toArray(RouteAddresses);
 
         List<LatLng> path = new ArrayList();
         List<Pair<LatLng, String>> markers = new ArrayList<>();
 
         long JourneyTime = 0; //in sec
         int JourneyLength = 0; //in meters
-
+        int[] waypointOrder = new int[0];
         try {
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -248,24 +301,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     });
 
-
-            String start = Double.toString(ClientLocation.latitude) + ',' + Double.toString(ClientLocation.longitude);
-            String end = start;
-
-            if(StartAddress != null)
-                start = StartAddress;
-            if(EndAddress != null)
-                end=EndAddress;
+            if(options.isStartCurrent())
+             start = Double.toString(ClientLocation.latitude) + ',' + Double.toString(ClientLocation.longitude);
+            if(options.isStopCurrent())
+             end = Double.toString(ClientLocation.latitude) + ',' + Double.toString(ClientLocation.longitude);
 
             DirectionsApiRequest req = DirectionsApi.getDirections(context, start, end);
             req.optimizeWaypoints(true);
             req.waypoints(RouteAddresses);
+            if(options.getTransportMean() == TransportMean.Bike)
+                req.mode(TravelMode.BICYCLING);
+            if(options.getTransportMean() == TransportMean.Foot)
+                req.mode(TravelMode.WALKING);
 
             DirectionsResult res = req.await();
-
+            waypointOrder = new int[waypoints.size()];
             if (res.routes != null && res.routes.length > 0) {
                 DirectionsRoute route = res.routes[0];
-
+                waypointOrder =  route.waypointOrder;
                 if (route.legs !=null) {
                     markers.add(new Pair<>(new LatLng(route.legs[0].startLocation.lat, route.legs[0].startLocation.lng), route.legs[0].startAddress));
 
@@ -309,14 +362,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
         }
         if (path.size() > 0) {
-            if(EndAddress==null && StartAddress==null) markers.remove(markers.size()-1);
+            if(options.isStartCurrent() && options.isStopCurrent()) markers.remove(markers.size()-1);
             for (int i=0;i<markers.size();i++) {
                 LatLng l = markers.get(i).first;
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(l);
                 markerOptions.title("Pozycja w trasie : " +  Integer.toString(i));
-                markerOptions.snippet(markers.get(i).second);
-
+                String snippet = markers.get(i).second;
+                try {
+                    if (i == 0 && !options.isStartCurrent() && clientsToVisit.get(0).getPhone().length() > 2)
+                        snippet += String.format("\n" + "Tel : %s", clientsToVisit.get(0).getPhone());
+                    else if (options.isStartCurrent() && i > 0 && i - 1 < waypointOrder.length && ClientWaypoints.get(waypointOrder[i - 1]).getPhone().length() > 2)
+                        snippet += String.format("\n" + "TEL : %s", ClientWaypoints.get(waypointOrder[i - 1]).getPhone());
+                    else if (!options.isStartCurrent() && i > 0 && i - 1 < waypointOrder.length && ClientWaypoints.get(waypointOrder[i - 1]).getPhone().length() > 2)
+                        snippet += String.format("\n" + "TEL : %s", ClientWaypoints.get(waypointOrder[i - 1]).getPhone());
+                    else if (i == markers.size()-1 && !options.isStopCurrent() && clientsToVisit.get(clientsToVisit.size()-1).getPhone().length()>2)
+                        snippet += String.format("\n" + "Tel : %s", clientsToVisit.get(clientsToVisit.size()-1).getPhone());
+                }
+                catch(Exception ex)
+                {
+                    Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+                }
+                markerOptions.snippet(snippet);
                 mMap.addMarker(markerOptions);
             }
             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
