@@ -92,4 +92,11 @@ public class ClientsDbHelper extends SQLiteOpenHelper {
         }
         return clients;
     }
+
+    public void deleteClient(Client client){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = ClientEntry._ID + " = ?";
+        String[] args = { String.valueOf(client.getId()) };
+        db.delete(ClientEntry.TABLE_NAME, selection, args);
+    }
 }

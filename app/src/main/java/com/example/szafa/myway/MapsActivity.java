@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.time.ZonedDateTime;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -75,8 +76,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public String[] RouteAddresses = new String[] {"Aleje Jerozolimskie", "Obozowa Warszawa", "Koszykowa Warszawa", "Stadion Narodowy"};
     public String StartAddress = null; //"Miejski Ogrod zoologiczny warszawa"; // if StartAddress is null then StartAdress is the current client location
     public String EndAddress = null; // if EndAddress is null then EndAddress is the current client location
-
-    private String GEOAPIKEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -259,7 +258,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap.clear();
 
-        GeoApiContext context = new GeoApiContext.Builder().apiKey(GEOAPIKEY).build();
+        String geoApiKey = getString(R.string.google_maps_key);
+        GeoApiContext context = new GeoApiContext.Builder().apiKey(geoApiKey).build();
 
         String start="", end="";
         ArrayList<String> waypoints = new ArrayList<String>();

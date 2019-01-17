@@ -15,6 +15,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
     private ArrayList<Client> data;
     private ArrayList<Client> clientsToVisit;
     private ClientListActivity clientListActivity;
+    private ClientsDbHelper db;
 
     public ArrayList<Client> getData() {
         return data;
@@ -26,14 +27,20 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private Button buttonClient;
+        private Button btnRemoveFromDb;
 
         public Button getButtonClient() {
             return buttonClient;
         }
 
+        public Button getBtnRemoveFromDb() {
+            return btnRemoveFromDb;
+        }
+
         public ViewHolder(View view){
             super(view);
             buttonClient = view.findViewById(R.id.buttonClient);
+            btnRemoveFromDb = view.findViewById(R.id.btnRemoveFromDb);
         }
 
     }
@@ -42,6 +49,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
         this.data = data;
         this.clientsToVisit = clientsToVisit;
         this.clientListActivity = clientListActivity;
+        this.db = ClientsDbHelper.getDbHelper();
     }
 
     @NonNull
@@ -61,11 +69,22 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             public void onClick(View v) {
                 Client clientAtPosition = data.get(position);
                 for(Client c : clientsToVisit){
-                    if(c.getId() == clientAtPosition.getId()){
+                    if(c == clientAtPosition){
                         return;
                     }
                 }
                 clientListActivity.returnNewClient(clientAtPosition);
+            }
+        });
+        Button btnRemoveFromDb = holder.getBtnRemoveFromDb();
+        btnRemoveFromDb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Client clientAtPosition = data.get(position);
+                db.deleteClient(clientAtPosition);
+                data.remove(position);
+                notifyDataSetChanged();
+                clientListActivity.loadClients();
             }
         });
     }
