@@ -69,7 +69,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             public void onClick(View v) {
                 Client clientAtPosition = data.get(position);
                 for(Client c : clientsToVisit){
-                    if(c.getId() == clientAtPosition.getId()){
+                    if(c == clientAtPosition){
                         return;
                     }
                 }
