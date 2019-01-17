@@ -276,8 +276,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 waypoints.add(clientsToVisit.get(i).getAddress());
                 ClientWaypoints.add(clientsToVisit.get(i));
             }
-
         }
+        if(!options.isStartCurrent() && start.length()<2 || !options.isStopCurrent() && end.length()<2)
+        {
+            Toast.makeText(this, "Podany adres niewystarczająco dokładny!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
         RouteAddresses = new String[waypoints.size()];
         RouteAddresses = waypoints.toArray(RouteAddresses);
 
@@ -357,8 +363,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             }
-        } catch(Exception ex) {
-            Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+        } catch(com.google.maps.errors.InvalidRequestException ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        catch(Exception ex)
+        {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
         if (path.size() > 0) {
             if(options.isStartCurrent() && options.isStopCurrent()) markers.remove(markers.size()-1);
