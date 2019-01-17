@@ -68,11 +68,6 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 Client clientAtPosition = data.get(position);
-                for(Client c : clientsToVisit){
-                    if(c == clientAtPosition){
-                        return;
-                    }
-                }
                 clientListActivity.returnNewClient(clientAtPosition);
             }
         });
